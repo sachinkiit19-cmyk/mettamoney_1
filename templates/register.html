@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+    overflow-x: hidden;
+    color: white;
+}
+
+/* PARTICLE BACKGROUND */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+    perspective: 1200px;
+}
+
+/* 3D CARD */
+.card {
+    width: 520px;
+    padding: 35px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    transform-style: preserve-3d;
+    transition: 0.4s;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+/* HOVER 3D */
+.card:hover {
+    transform: rotateY(8deg) rotateX(5deg) scale(1.03);
+}
+
+/* TITLE */
+.card h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, cyan, white);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* SECTION */
+.section-title {
+    margin-top: 20px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* INPUT */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* INPUT FOCUS */
+.input-group input:focus,
+.input-group select:focus {
+    box-shadow: 0 0 10px cyan;
+    transform: scale(1.02);
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, cyan, blue);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* MOBILE */
+@media(max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
+</style>
+
+<canvas id="bg"></canvas>
+
+<div class="container">
+<div class="card" id="card">
+
+<h2>Merchant Onboarding</h2>
+
+<form method="POST">
+
+<!-- BUSINESS DETAILS -->
+<div class="section-title">1. Business Details</div>
+
+<div class="input-group">
+<input type="text" name="business_name" placeholder="Business Name">
+</div>
+
+<div class="input-group">
+<select name="business_type">
+<option value="">Business Type</option>
+<option>Proprietorship</option>
+<option>Partnership</option>
+<option>Pvt Ltd</option>
+<option>LLP</option>
+</select>
+</div>
+
+<div class="input-group">
+<input type="text" name="industry" placeholder="Industry Category">
+</div>
+
+<!-- AUTHORISED REPRESENTATIVE -->
+<div class="section-title">2. Authorised Representative Details</div>
+
+<div class="input-group">
+<input type="text" name="representative_name" placeholder="Full Name" required>
+</div>
+
+<div class="input-group">
+<input type="text" name="mobile" placeholder="Mobile Number" required>
+</div>
+
+<div class="input-group">
+<input type="email" name="email" placeholder="Email Address" required>
+</div>
+
+<button type="submit" class="btn">Continue</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+/* 3D MOUSE EFFECT */
+const card = document.getElementById("card");
+
+document.addEventListener("mousemove", (e) => {
+    let x = (window.innerWidth / 2 - e.pageX) / 30;
+    let y = (window.innerHeight / 2 - e.pageY) / 30;
+    card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* PARTICLE BACKGROUND */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2,
+        d: Math.random() * 1
+    });
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    update();
+}
+
+function update() {
+    particles.forEach(p => {
+        p.y += p.d;
+        if (p.y > canvas.height) {
+            p.y = 0;
+            p.x = Math.random() * canvas.width;
+        }
+    });
+}
+
+setInterval(draw, 30);
+</script>
+
+{% endblock %}
