@@ -71,7 +71,7 @@ def home():
 
         return redirect('/verify')
 
-    return render_template('home.html')
+    return render_template('index.html')
 
 # ---------------- VERIFY ----------------
 @app.route('/verify', methods=['GET', 'POST'])
